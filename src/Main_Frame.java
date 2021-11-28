@@ -13,7 +13,15 @@ public class Main_Frame extends JFrame
     private JTextField z_field;
     private ButtonGroup radioButtons = new ButtonGroup();
     private Box formula_type = Box.createHorizontalBox();
+    private ButtonGroup radioMemoryButtons = new ButtonGroup();
+    private Box hBoxMemoryType = Box.createHorizontalBox();
+    private JTextField memoryTextField;
     int formula_number = 1;
+    private int memoryId= 1;
+
+    private Double mem1 = 0.0;
+    private Double mem2 = 0.0;
+    private Double mem3 = 0.0;
 
     public Double formula1(Double x, Double y, Double z)
     {
@@ -25,6 +33,22 @@ public class Main_Frame extends JFrame
     {
         return Math.pow(Math.cos(Math.PI) * x * x * x + 2 * Math.log(1 + y), 1 / 4) * (Math.pow(Math.E, z * z)
                 + Math.sqrt(1 / x) + Math.cos(Math.pow(Math.E, y)));
+    }
+
+    private void addMemoryRadioButton (String buttonName, final int memoryId)	{         // радиокнопки для памяти
+        JRadioButton button = new JRadioButton(buttonName);
+
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event)	{
+                Main_Frame.this.memoryId = memoryId;
+                if (memoryId == 1)	memoryTextField.setText(mem1.toString());
+                if (memoryId == 2)	memoryTextField.setText(mem2.toString());
+                if (memoryId == 3)	memoryTextField.setText(mem3.toString());
+            }
+        });
+
+        radioMemoryButtons.add(button);
+        hBoxMemoryType.add(button);
     }
 
     private void addRadioButton(String name, final int formula_number)           // радиокнопки для формул
@@ -138,6 +162,60 @@ public class Main_Frame extends JFrame
         actions.add(clean_button);
         actions.add(Box.createHorizontalGlue());
 
+        hBoxMemoryType.add(Box.createHorizontalGlue());
+        addMemoryRadioButton("Память 1",1);
+        addMemoryRadioButton("Память 2",2);
+        addMemoryRadioButton("Память 3",3);
+        radioMemoryButtons.setSelected(radioMemoryButtons.getElements().nextElement().getModel(), true);
+        hBoxMemoryType.add(Box.createHorizontalGlue());
+
+
+
+        Box memory_result=Box.createHorizontalBox();
+        memory_result.add(Box.createHorizontalGlue());
+        JButton MC = new JButton("MC");
+
+        MC.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                if (memoryId == 1)	mem1 = (double) 0;
+                if (memoryId == 2)	mem2 = (double) 0;
+                if (memoryId == 3)	mem3 = (double) 0;
+                memoryTextField.setText("0.0");
+            }
+        });
+
+        JButton M_plus = new JButton("M+");
+        M_plus.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                try{
+                    Double result = Double.parseDouble(result_field.getText());
+
+                    if (memoryId == 1) 	{mem1 += result; memoryTextField.setText(mem1.toString());}
+                    if (memoryId == 2)	{mem2 += result; memoryTextField.setText(mem2.toString());}
+                    if (memoryId == 3)	{mem3 += result; memoryTextField.setText(mem3.toString());}
+
+                }
+                catch (NumberFormatException ex)
+                {
+                    JOptionPane.showMessageDialog(Main_Frame.this,
+                            "Ошибка в формате записи числа с плавающей точкой", "" +
+                                    "Ошибочный формат числа", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        memoryTextField = new JTextField("0.0", 15);
+        memoryTextField.setMaximumSize(memoryTextField.getPreferredSize());
+
+        memory_result.add(MC);
+        memory_result.add(Box.createHorizontalStrut(10));
+        memory_result.add(memoryTextField);
+        memory_result.add(Box.createHorizontalStrut(10));
+        memory_result.add(M_plus);
+        memory_result.add(Box.createHorizontalGlue());
+
         Box contentBox = Box.createVerticalBox();
         contentBox.add(Box.createVerticalGlue());
         contentBox.add(formula_type);
@@ -147,6 +225,10 @@ public class Main_Frame extends JFrame
         contentBox.add(result_area);
         contentBox.add(Box.createVerticalGlue());
         contentBox.add(actions);
+        contentBox.add(Box.createVerticalGlue());
+        contentBox.add(hBoxMemoryType);
+        contentBox.add(Box.createVerticalGlue());
+        contentBox.add(memory_result);
 
         getContentPane().add(contentBox, BorderLayout.CENTER);
     }
