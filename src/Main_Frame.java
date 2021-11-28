@@ -11,6 +11,7 @@ public class Main_Frame extends JFrame
     private JTextField x_field;
     private JTextField y_field;
     private JTextField z_field;
+    private JLabel image;
     private ButtonGroup radioButtons = new ButtonGroup();
     private Box formula_type = Box.createHorizontalBox();
     private ButtonGroup radioMemoryButtons = new ButtonGroup();
@@ -60,6 +61,8 @@ public class Main_Frame extends JFrame
             public void actionPerformed(ActionEvent actionEvent)
             {
                 Main_Frame.this.formula_number = formula_number;
+                if (formula_number == 1)	image.setIcon(new ImageIcon(Main_Frame.class.getResource("formula_1.jpg")));
+                if (formula_number == 2)    image.setIcon(new ImageIcon(Main_Frame.class.getResource("formula_2.jpg")));
             }
         });
         radioButtons.add(button);
@@ -71,6 +74,14 @@ public class Main_Frame extends JFrame
         Toolkit kit = Toolkit.getDefaultToolkit();
         setLocation((kit.getScreenSize().width-width)/2,
                 (kit.getScreenSize().height-height)/2);
+
+        Box picture = Box.createHorizontalBox();                    // область с картинкой
+        picture.add(Box.createVerticalGlue());
+        picture.add(Box.createHorizontalGlue());
+        image = new JLabel(new ImageIcon(Main_Frame.class.getResource("formula_1.jpg")));
+        picture.add(image);
+        picture.add(Box.createHorizontalGlue());
+        picture.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 
         formula_type.add(Box.createHorizontalGlue());              // область с выбором формул
         addRadioButton("Формула 1", 1);
@@ -217,6 +228,8 @@ public class Main_Frame extends JFrame
         memory_result.add(Box.createHorizontalGlue());
 
         Box contentBox = Box.createVerticalBox();
+        contentBox.add(Box.createVerticalGlue());
+        contentBox.add(picture);
         contentBox.add(Box.createVerticalGlue());
         contentBox.add(formula_type);
         contentBox.add(Box.createVerticalGlue());
